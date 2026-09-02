@@ -35,10 +35,6 @@ never overwrite the oxide baseline files.
 You need a terminal with uv installed. Please use WSL (Windows Subsystem for
 Linux).
 
-Why WSL? The skore agent does support Windows natively. However, further work
-is needed with the SIA teams to configure the permission system. Please use
-WSL in the meantime.
-
 ## Setup
 
 ### Dependencies
