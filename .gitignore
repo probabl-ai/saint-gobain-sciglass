@@ -1,0 +1,7 @@
+.skore
+
+pixi*
+
+data/*.csv
+
+.agents
