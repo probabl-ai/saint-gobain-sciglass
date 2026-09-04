@@ -1,9 +1,12 @@
 .skore
 
-pixi*
-
-data/*.csv
+*.csv
+**pycache**
 
 .agents
 
 .vscode/chatLanguageModels.json
+
+opencode.json
+
+.opencode/plugins/skore-session.js
