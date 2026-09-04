@@ -7,6 +7,12 @@ participants.
 
 ## System requirements
 
+Install skore: `pip install skore-cli`.
+Then, to start skore-agent:
+- in cli: `skore-copilot cli`
+- in desktop: `skore-copilot desktop` and follow the instructions.
+- in vscode: `skore-copilot` and follow the instructions.
+
 You need a UNIX terminal with either `pip`, `pixi`, `uv` or `conda` installed. If you are on windows, please use WSL (Windows Subsystem for Linux). Permissions to run commands on Windows Powershell are messy, so it is recommended to use WSL.
 
 ## Goal
