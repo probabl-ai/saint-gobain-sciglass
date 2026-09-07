@@ -19,6 +19,8 @@ To start skore-agent on unix terminal:
 - in desktop: `./skore-copilot desktop` and follow the instructions.
 - in vscode: `./skore-copilot vscode` and follow the instructions.
 
+Join the workspace on skore hub: [sciglass](https://saint-gobain.api.skore.probabl.ai/identity/invitations/65c3b3c7-6289-4fcb-8398-0c5d01d6841f?success_uri=https://saint-gobain.skore.probabl.ai/login/success)
+
 ## Goals
 
 1. Predict `Tliquidus`  from **oxide mole fractions** (not wt%) for glasses with **SiO2 > 60 mol%**; use project `Tliquidus` on skore hub.
