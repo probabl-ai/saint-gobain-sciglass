@@ -8,16 +8,19 @@ MODEL_ID="skore-agent"
 SKORE_HUB_URL="https://saint-gobain.api.skore.probabl.ai"
 FORCE=0
 MODE=""
+RESUME=""
 
 usage() {
   cat <<'EOF'
-Usage: scripts/skore-copilot.sh {cli|desktop|vscode} [--force]
+Usage: scripts/skore-copilot.sh {cli|desktop|vscode} [--force] [--resume=<session-id>]
 
   cli       Starts Copilot CLI session with skore-agent.
   desktop   Retrieves and copy the Hub API key to the clipboard and print GitHub Copilot
             app (desktop) install steps.
   vscode    Shortcut for ``skore agent --harness copilot --hub-url ...``.
   --force   Run ``skore agent --harness copilot`` even if ``.skore`` already exists.
+  --resume=<session-id>
+            (cli only) Resume a Copilot CLI session.
 
 ``skore agent`` runs only when ``.skore`` is missing, or with ``--force``.
 The Hub key is stored in gitignored ``.skore``. This script does not read ``.env``.
@@ -32,6 +35,13 @@ for arg in "$@"; do
       ;;
     --force)
       FORCE=1
+      ;;
+    --resume=*)
+      RESUME="${arg#--resume=}"
+      if [[ -z "$RESUME" ]]; then
+        usage >&2
+        exit 1
+      fi
       ;;
     cli | desktop | vscode)
       if [[ -n "$MODE" ]]; then
@@ -49,6 +59,11 @@ done
 
 if [[ -z "$MODE" ]]; then
   usage >&2
+  exit 1
+fi
+
+if [[ -n "$RESUME" && "$MODE" != "cli" ]]; then
+  echo "--resume is only valid with cli." >&2
   exit 1
 fi
 
@@ -162,6 +177,11 @@ export COPILOT_PROVIDER_BASE_URL="$BASE_URL"
 export COPILOT_PROVIDER_WIRE_API=completions
 export COPILOT_MODEL="$MODEL_ID"
 export COPILOT_PROVIDER_HEADERS="X-API-Key: ${HUB_KEY}"
+export COPILOT_PROVIDER_MAX_OUTPUT_TOKENS=8192
+export COPILOT_PROVIDER_MAX_PROMPT_TOKENS=200000
 
 cd "$ROOT"
+if [[ -n "$RESUME" ]]; then
+  exec copilot --resume="$RESUME"
+fi
 exec copilot

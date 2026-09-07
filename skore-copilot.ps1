@@ -3,17 +3,20 @@
 # Windows counterpart of skore-copilot.sh (that script is macOS / Linux).
 param(
     [Parameter(Position = 0)]
-    [string]$Mode
+    [string]$Mode,
+    [Parameter(ValueFromRemainingArguments = $true)]
+    [string[]]$ExtraArgs
 )
 
 $ErrorActionPreference = "Stop"
 
 $Root = (Resolve-Path $PSScriptRoot).Path
 $SkoreHubUrl = "https://saint-gobain.api.skore.probabl.ai"
+$Resume = ""
 
 function Show-Usage {
     @"
-Usage: scripts/skore-copilot.ps1 {cli|desktop|vscode}
+Usage: scripts/skore-copilot.ps1 {cli|desktop|vscode} [--resume=<session-id>]
 
   cli       Run ``skore agent --harness copilot``, then start an interactive
             Copilot CLI session against Skore Hub (no extra copilot flags).
@@ -21,6 +24,8 @@ Usage: scripts/skore-copilot.ps1 {cli|desktop|vscode}
             possible, and print GitHub Copilot app (desktop) install steps.
             Does not print the key.
   vscode    Shortcut for ``skore agent --harness copilot --hub-url ...``.
+  --resume=<session-id>
+            (cli only) Resume a Copilot CLI session.
 
 The Hub key is stored in gitignored ``.skore``. This script does not read ``.env``.
 "@
@@ -33,6 +38,24 @@ if ($Mode -in @("-h", "--help", "-?", "/?")) {
 if ($Mode -notin @("cli", "desktop", "vscode")) {
     Show-Usage
     exit 1
+}
+
+foreach ($arg in @($ExtraArgs)) {
+    if ($arg -like "--resume=*") {
+        $Resume = $arg.Substring("--resume=".Length)
+        if (-not $Resume) {
+            Show-Usage
+            exit 1
+        }
+    }
+    else {
+        Show-Usage
+        exit 1
+    }
+}
+
+if ($Resume -and $Mode -ne "cli") {
+    Write-Error "--resume is only valid with cli."
 }
 
 if (-not (Get-Command skore -ErrorAction SilentlyContinue)) {
@@ -120,7 +143,14 @@ $env:COPILOT_PROVIDER_BASE_URL = $baseUrl
 $env:COPILOT_PROVIDER_WIRE_API = "completions"
 $env:COPILOT_MODEL = "skore-agent"
 $env:COPILOT_PROVIDER_HEADERS = "X-API-Key: $hubKey"
+$env:COPILOT_PROVIDER_MAX_OUTPUT_TOKENS = "8192"
+$env:COPILOT_PROVIDER_MAX_PROMPT_TOKENS = "200000"
 
 Set-Location $Root
-& copilot
+if ($Resume) {
+    & copilot --resume=$Resume
+}
+else {
+    & copilot
+}
 exit $LASTEXITCODE

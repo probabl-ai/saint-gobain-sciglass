@@ -30,7 +30,7 @@ X = compounds_sil[oxides_kept].copy()
 print(f"\nComposition table shape: {X.shape}")
 print(f"Composition sums: min={X.sum(axis=1).min():.4f}, max={X.sum(axis=1).max():.4f}, mean={X.sum(axis=1).mean():.4f}")
 
-target_col = "Tg"
+target_col = "TLiquidus"
 y = df_silicates[("property", target_col)].copy()
 print(f"\nTarget ({target_col}) shape: {y.shape}")
 print(f"Target NaN count before drop: {y.isna().sum()}")
