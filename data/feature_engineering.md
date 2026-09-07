@@ -1,6 +1,4 @@
-## GlassNet feature engineering (optional, after baseline)
-
-How to run the helpers: [README.md](README.md).
+## GlassNet feature engineering
 
 Cassar 2023, arXiv:2303.15538: oxide → atomic mole fractions in **§2.1**
 (steps 3–4); feature extraction, selection, and scaling in **§2.2**.
