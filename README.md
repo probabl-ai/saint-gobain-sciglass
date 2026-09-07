@@ -8,16 +8,21 @@ participants.
 ## System requirements
 
 Install skore: `pip install skore-cli`.
-Then, to start skore-agent:
-- in cli: `skore-copilot cli`
-- in desktop: `skore-copilot desktop` and follow the instructions.
-- in vscode: `skore-copilot` and follow the instructions.
 
-You need a UNIX terminal with either `pip`, `pixi`, `uv` or `conda` installed. If you are on windows, please use WSL (Windows Subsystem for Linux). Permissions to run commands on Windows Powershell are messy, so it is recommended to use WSL.
+Then, to start skore-agent on windows powershell:
+- in cli: `.\skore-copilot.ps1 cli`
+- in desktop: `.\skore-copilot.ps1 desktop` and follow the instructions.
+- in vscode: `.\skore-copilot.ps1 vscode` and follow the instructions.
 
-## Goal
+To start skore-agent on unix terminal:
+- in cli: `./skore-copilot cli`
+- in desktop: `./skore-copilot desktop` and follow the instructions.
+- in vscode: `./skore-copilot vscode` and follow the instructions.
 
-Predict `Tg`, `Tliquidus`, `T3`, and `T4` from **oxide mole fractions** (not wt%) for glasses with **SiO2 > 60 mol%**.
+## Goals
+
+1. Predict `Tliquidus`  from **oxide mole fractions** (not wt%) for glasses with **SiO2 > 60 mol%**; use project `Tliquidus` on skore hub.
+2. Predict `T4` from **oxide mole fractions** (not wt%) for glasses with **SiO2 > 60 mol%**; use project `T4` on skore hub.
 
 ## Data
 

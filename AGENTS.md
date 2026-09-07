@@ -1,4 +1,0 @@
-- **Always used `test.csv` as the test set and never train on it.
-- If you work on a CrossValidationReport, also push a fitted estimator alongside it.
-- After the user has made a baseline model, you are allowed to suggest feature-engineering if relevant (see `data/feature-engineering/README.md`).
-- Use only API authentification, not interactive login with browser. You can find the api_key in `.skore`.

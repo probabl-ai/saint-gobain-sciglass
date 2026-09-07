@@ -1,5 +1,4 @@
 .skore
-
 *.csv
 **pycache**
 
@@ -10,3 +9,5 @@
 opencode.json
 
 .opencode/plugins/skore-session.js
+
+.pi/agent/models.json

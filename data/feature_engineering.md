@@ -1,3 +1,8 @@
+# Feature Engineering
+
+The following is a summary of the feature engineering process described in the Cassar 2023 paper.
+It is decomposed in 3 steps, each step is dependant of the previous one.
+
 ## GlassNet feature engineering
 
 Cassar 2023, arXiv:2303.15538: oxide → atomic mole fractions in **§2.1**
