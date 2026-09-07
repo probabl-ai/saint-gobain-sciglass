@@ -1,20 +1,22 @@
 #!/usr/bin/env bash
 # Mint / reuse a Hub key via ``skore agent --harness copilot``, then start
-# interactive Copilot CLI or print GitHub Copilot desktop setup.
+# interactive Copilot CLI, print GitHub Copilot desktop setup, or launch VS Code.
 set -euo pipefail
 
-ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+ROOT="$(cd "$(dirname "$0")" && pwd)"
 MODEL_ID="skore-agent"
+SKORE_HUB_URL="https://saint-gobain.api.skore.probabl.ai"
 FORCE=0
 MODE=""
 
 usage() {
   cat <<'EOF'
-Usage: scripts/skore-copilot.sh {cli|desktop} [--force]
+Usage: scripts/skore-copilot.sh {cli|desktop|vscode} [--force]
 
   cli       Starts Copilot CLI session with skore-agent.
   desktop   Retrieves and copy the Hub API key to the clipboard and print GitHub Copilot
             app (desktop) install steps.
+  vscode    Shortcut for ``skore agent --harness copilot --hub-url ...``.
   --force   Run ``skore agent --harness copilot`` even if ``.skore`` already exists.
 
 ``skore agent`` runs only when ``.skore`` is missing, or with ``--force``.
@@ -31,7 +33,7 @@ for arg in "$@"; do
     --force)
       FORCE=1
       ;;
-    cli | desktop)
+    cli | desktop | vscode)
       if [[ -n "$MODE" ]]; then
         usage >&2
         exit 1
@@ -48,6 +50,14 @@ done
 if [[ -z "$MODE" ]]; then
   usage >&2
   exit 1
+fi
+
+if [[ "$MODE" == "vscode" ]]; then
+  command -v skore >/dev/null || {
+    echo "skore is not on PATH (need skore-cli with --harness copilot)." >&2
+    exit 1
+  }
+  exec skore agent --harness copilot --workspace "$ROOT" --hub-url "$SKORE_HUB_URL"
 fi
 
 SKORE_FILE="$ROOT/.skore"
@@ -74,7 +84,7 @@ EOF
   cp "$shadow/code" "$shadow/code-insiders"
 
   echo "Running skore agent --harness copilot (VS Code window suppressed; may still write user chatLanguageModels.json)..."
-  PATH="$shadow:$PATH" skore agent --harness copilot --workspace "$ROOT" --model-id "$MODEL_ID"
+  PATH="$shadow:$PATH" skore agent --harness copilot --workspace "$ROOT" --model-id "$MODEL_ID" --hub-url "$SKORE_HUB_URL"
   cleanup_shadow
   trap - EXIT
 }

@@ -1,5 +1,5 @@
 # Mint / reuse a Hub key via ``skore agent --harness copilot``, then start
-# interactive Copilot CLI or print GitHub Copilot desktop setup.
+# interactive Copilot CLI, print GitHub Copilot desktop setup, or launch VS Code.
 # Windows counterpart of skore-copilot.sh (that script is macOS / Linux).
 param(
     [Parameter(Position = 0)]
@@ -8,17 +8,19 @@ param(
 
 $ErrorActionPreference = "Stop"
 
-$Root = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
+$Root = (Resolve-Path $PSScriptRoot).Path
+$SkoreHubUrl = "https://saint-gobain.api.skore.probabl.ai"
 
 function Show-Usage {
     @"
-Usage: scripts/skore-copilot.ps1 {cli|desktop}
+Usage: scripts/skore-copilot.ps1 {cli|desktop|vscode}
 
   cli       Run ``skore agent --harness copilot``, then start an interactive
             Copilot CLI session against Skore Hub (no extra copilot flags).
   desktop   Same key retrieval, copy the Hub API key to the clipboard when
             possible, and print GitHub Copilot app (desktop) install steps.
             Does not print the key.
+  vscode    Shortcut for ``skore agent --harness copilot --hub-url ...``.
 
 The Hub key is stored in gitignored ``.skore``. This script does not read ``.env``.
 "@
@@ -28,13 +30,18 @@ if ($Mode -in @("-h", "--help", "-?", "/?")) {
     Show-Usage
     exit 0
 }
-if ($Mode -notin @("cli", "desktop")) {
+if ($Mode -notin @("cli", "desktop", "vscode")) {
     Show-Usage
     exit 1
 }
 
 if (-not (Get-Command skore -ErrorAction SilentlyContinue)) {
     Write-Error "skore is not on PATH (need skore-cli with --harness copilot)."
+}
+
+if ($Mode -eq "vscode") {
+    & skore agent --harness copilot --workspace $Root --hub-url $SkoreHubUrl
+    exit $LASTEXITCODE
 }
 
 $shadow = Join-Path ([System.IO.Path]::GetTempPath()) ("skore-copilot-" + [guid]::NewGuid().ToString("n"))
@@ -49,7 +56,7 @@ Set-Content -Path (Join-Path $shadow "code-insiders.bat") -Value $stub -NoNewlin
 $env:PATH = "$shadow;$env:PATH"
 try {
     Write-Host "Running skore agent --harness copilot (VS Code window suppressed; may still write user chatLanguageModels.json)..."
-    & skore agent --harness copilot --workspace $Root
+    & skore agent --harness copilot --workspace $Root --hub-url $SkoreHubUrl
     if ($LASTEXITCODE -ne 0) {
         throw "skore agent failed with exit code $LASTEXITCODE"
     }
